@@ -1,0 +1,26 @@
+---
+import { soluciones } from '../data/soluciones';
+import { whatsappUrl } from '../lib/contacto';
+import Icono from './Icono.astro';
+---
+<section id="soluciones" class="section solutions" aria-labelledby="titulo-soluciones" tabindex="-1">
+  <div class="container">
+    <div class="solutions-heading">
+      <h2 id="titulo-soluciones">Suministros y servicios eléctricos</h2>
+      <p>Elige un área y abre WhatsApp con tu consulta ya escrita.</p>
+    </div>
+    <!-- Las cuatro áreas siempre visibles; toda la fila abre la consulta de su área. -->
+    <ul class="solutions-list">
+      {soluciones.map((solucion) => (
+        <li class="solution" id={`area-${solucion.id}`}>
+          <h3>{solucion.titulo}</h3>
+          <p class="solution-summary">{solucion.resumen}</p>
+          <a class="solution-link" href={whatsappUrl(solucion.mensaje)} aria-label={`Consultar por WhatsApp: ${solucion.titulo}`}>
+            <span class="solution-link-icon"><Icono nombre="whatsapp" /></span>
+            <span class="solution-link-text">Consultar por WhatsApp</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

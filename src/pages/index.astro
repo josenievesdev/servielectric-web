@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Encabezado from '../components/Encabezado.astro';
+import Presentacion from '../components/Presentacion.astro';
+import Soluciones from '../components/Soluciones.astro';
+import Marcas from '../components/Marcas.astro';
+import Historia from '../components/Historia.astro';
+import Ubicacion from '../components/Ubicacion.astro';
+import Pie from '../components/Pie.astro';
+---
+<Base>
+  <Encabezado />
+  <main id="contenido" tabindex="-1">
+    <Presentacion />
+    <Soluciones />
+    <Marcas />
+    <Historia />
+    <Ubicacion />
+  </main>
+  <Pie />
+</Base>

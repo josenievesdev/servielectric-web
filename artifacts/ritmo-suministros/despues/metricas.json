@@ -1,0 +1,647 @@
+{
+  "390": {
+    "header": {
+      "top": 0,
+      "bottom": 93,
+      "alto": 93,
+      "x": 0,
+      "ancho": 390,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marca": {
+      "top": 25,
+      "bottom": 73,
+      "alto": 48,
+      "x": 24,
+      "ancho": 196,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "nav": {
+      "top": 0,
+      "bottom": 0,
+      "alto": 0,
+      "x": 0,
+      "ancho": 0,
+      "pt": "12px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "kicker": {
+      "top": 125,
+      "bottom": 146,
+      "alto": 21,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "28px"
+    },
+    "h1": {
+      "top": 174,
+      "bottom": 314,
+      "alto": 140,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroCopy": {
+      "top": 360,
+      "bottom": 414,
+      "alto": 54,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroActions": {
+      "top": 434,
+      "bottom": 550,
+      "alto": 116,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "20px",
+      "mb": "0px"
+    },
+    "hero": {
+      "top": 93,
+      "bottom": 850,
+      "alto": 757,
+      "x": 0,
+      "ancho": 390,
+      "pt": "32px",
+      "pb": "40px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroMedia": {
+      "top": 582,
+      "bottom": 810,
+      "alto": 228,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "soluciones": {
+      "top": 850,
+      "bottom": 1584,
+      "alto": 733,
+      "x": 0,
+      "ancho": 390,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Soluciones": {
+      "top": 906,
+      "bottom": 984,
+      "alto": 78,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marcas": {
+      "top": 1584,
+      "bottom": 1991,
+      "alto": 407,
+      "x": 0,
+      "ancho": 390,
+      "pt": "40px",
+      "pb": "40px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "historia": {
+      "top": 1991,
+      "bottom": 2403,
+      "alto": 412,
+      "x": 0,
+      "ancho": 390,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Historia": {
+      "top": 2047,
+      "bottom": 2071,
+      "alto": 24,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "24px"
+    },
+    "retrato": {
+      "top": 2095,
+      "bottom": 2205,
+      "alto": 110,
+      "x": 24,
+      "ancho": 88,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "ubicacion": {
+      "top": 2403,
+      "bottom": 3281,
+      "alto": 878,
+      "x": 0,
+      "ancho": 390,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "mapa": {
+      "top": 2905,
+      "bottom": 3225,
+      "alto": 320,
+      "x": 24,
+      "ancho": 342,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "pie": {
+      "top": 3281,
+      "bottom": 3668,
+      "alto": 387,
+      "x": 0,
+      "ancho": 390,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "documento": {
+      "alto": 3668,
+      "anchoContenido": 390,
+      "viewport": 390
+    },
+    "distancias": {
+      "header_a_kicker": 32,
+      "header_a_h1": 81,
+      "acciones_a_finHero": 300,
+      "acciones_a_h2Soluciones": 356,
+      "heroMedia_a_finHero": 40,
+      "finMarcas_a_h2Historia": 56,
+      "finHistoria_a_inicioUbicacion": 0
+    },
+    "errores": []
+  },
+  "768": {
+    "header": {
+      "top": 0,
+      "bottom": 93,
+      "alto": 93,
+      "x": 0,
+      "ancho": 768,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marca": {
+      "top": 25,
+      "bottom": 73,
+      "alto": 48,
+      "x": 43,
+      "ancho": 196,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "nav": {
+      "top": 0,
+      "bottom": 0,
+      "alto": 0,
+      "x": 0,
+      "ancho": 0,
+      "pt": "12px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "kicker": {
+      "top": 125,
+      "bottom": 146,
+      "alto": 21,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "28px"
+    },
+    "h1": {
+      "top": 174,
+      "bottom": 299,
+      "alto": 124,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroCopy": {
+      "top": 345,
+      "bottom": 399,
+      "alto": 54,
+      "x": 43,
+      "ancho": 434,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroActions": {
+      "top": 419,
+      "bottom": 475,
+      "alto": 56,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "20px",
+      "mb": "0px"
+    },
+    "hero": {
+      "top": 93,
+      "bottom": 820,
+      "alto": 727,
+      "x": 0,
+      "ancho": 768,
+      "pt": "32px",
+      "pb": "40px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroMedia": {
+      "top": 507,
+      "bottom": 780,
+      "alto": 273,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "soluciones": {
+      "top": 820,
+      "bottom": 1459,
+      "alto": 639,
+      "x": 0,
+      "ancho": 768,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Soluciones": {
+      "top": 876,
+      "bottom": 915,
+      "alto": 39,
+      "x": 43,
+      "ancho": 534,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marcas": {
+      "top": 1459,
+      "bottom": 1866,
+      "alto": 407,
+      "x": 0,
+      "ancho": 768,
+      "pt": "40px",
+      "pb": "40px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "historia": {
+      "top": 1866,
+      "bottom": 2219,
+      "alto": 353,
+      "x": 0,
+      "ancho": 768,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Historia": {
+      "top": 1922,
+      "bottom": 1946,
+      "alto": 24,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "24px"
+    },
+    "retrato": {
+      "top": 1970,
+      "bottom": 2080,
+      "alto": 110,
+      "x": 43,
+      "ancho": 88,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "ubicacion": {
+      "top": 2219,
+      "bottom": 3164,
+      "alto": 945,
+      "x": 0,
+      "ancho": 768,
+      "pt": "56px",
+      "pb": "56px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "mapa": {
+      "top": 2653,
+      "bottom": 3108,
+      "alto": 455,
+      "x": 43,
+      "ancho": 683,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "pie": {
+      "top": 3164,
+      "bottom": 3430,
+      "alto": 266,
+      "x": 0,
+      "ancho": 768,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "documento": {
+      "alto": 3430,
+      "anchoContenido": 768,
+      "viewport": 768
+    },
+    "distancias": {
+      "header_a_kicker": 32,
+      "header_a_h1": 81,
+      "acciones_a_finHero": 345,
+      "acciones_a_h2Soluciones": 401,
+      "heroMedia_a_finHero": 40,
+      "finMarcas_a_h2Historia": 56,
+      "finHistoria_a_inicioUbicacion": 0
+    },
+    "errores": []
+  },
+  "1440": {
+    "header": {
+      "top": 0,
+      "bottom": 101,
+      "alto": 101,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marca": {
+      "top": 29,
+      "bottom": 77,
+      "alto": 48,
+      "x": 80,
+      "ancho": 196,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "nav": {
+      "top": 31,
+      "bottom": 75,
+      "alto": 44,
+      "x": 547,
+      "ancho": 813,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "kicker": {
+      "top": 162,
+      "bottom": 183,
+      "alto": 21,
+      "x": 80,
+      "ancho": 588,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "32px"
+    },
+    "h1": {
+      "top": 215,
+      "bottom": 361,
+      "alto": 146,
+      "x": 80,
+      "ancho": 588,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroCopy": {
+      "top": 407,
+      "bottom": 469,
+      "alto": 61,
+      "x": 80,
+      "ancho": 488,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroActions": {
+      "top": 489,
+      "bottom": 545,
+      "alto": 56,
+      "x": 80,
+      "ancho": 588,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "20px",
+      "mb": "0px"
+    },
+    "hero": {
+      "top": 101,
+      "bottom": 629,
+      "alto": 528,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "40px",
+      "pb": "64px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "heroMedia": {
+      "top": 141,
+      "bottom": 565,
+      "alto": 424,
+      "x": 724,
+      "ancho": 636,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "soluciones": {
+      "top": 629,
+      "bottom": 1318,
+      "alto": 688,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "87.84px",
+      "pb": "87.84px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Soluciones": {
+      "top": 717,
+      "bottom": 773,
+      "alto": 56,
+      "x": 80,
+      "ancho": 771,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "marcas": {
+      "top": 1318,
+      "bottom": 1607,
+      "alto": 289,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "48px",
+      "pb": "48px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "historia": {
+      "top": 1607,
+      "bottom": 2082,
+      "alto": 476,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "87.84px",
+      "pb": "87.84px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "h2Historia": {
+      "top": 1738,
+      "bottom": 1762,
+      "alto": 24,
+      "x": 80,
+      "ancho": 708,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "24px"
+    },
+    "retrato": {
+      "top": 1695,
+      "bottom": 1995,
+      "alto": 300,
+      "x": 1120,
+      "ancho": 240,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "ubicacion": {
+      "top": 2082,
+      "bottom": 2682,
+      "alto": 600,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "87.84px",
+      "pb": "87.84px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "mapa": {
+      "top": 2170,
+      "bottom": 2595,
+      "alto": 424,
+      "x": 724,
+      "ancho": 636,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "pie": {
+      "top": 2682,
+      "bottom": 2986,
+      "alto": 304,
+      "x": 0,
+      "ancho": 1440,
+      "pt": "0px",
+      "pb": "0px",
+      "mt": "0px",
+      "mb": "0px"
+    },
+    "documento": {
+      "alto": 2986,
+      "anchoContenido": 1440,
+      "viewport": 1440
+    },
+    "distancias": {
+      "header_a_kicker": 61,
+      "header_a_h1": 114,
+      "acciones_a_finHero": 84,
+      "acciones_a_h2Soluciones": 172,
+      "heroMedia_a_finHero": 64,
+      "finMarcas_a_h2Historia": 131,
+      "finHistoria_a_inicioUbicacion": 0
+    },
+    "errores": []
+  }
+}

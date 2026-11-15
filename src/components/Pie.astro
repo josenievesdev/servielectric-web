@@ -1,0 +1,38 @@
+---
+import { empresa, perfilesOficiales } from '../data/empresa';
+import { whatsappUrl } from '../lib/contacto';
+import Marca from './Marca.astro';
+import Icono from './Icono.astro';
+
+const perfiles = perfilesOficiales.filter((perfil) => perfil.url.trim() !== '');
+const iconos = { Instagram: 'instagram', LinkedIn: 'linkedin' } as const;
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <Marca />
+      <p>{empresa.titular} {empresa.trayectoria.toLowerCase()}.</p>
+    </div>
+    <div class="footer-group">
+      <h2 class="footer-title">Ventas</h2>
+      <a class="footer-phone" href={whatsappUrl(empresa.mensajeCotizacion)} aria-label={`Escribir a ventas por WhatsApp: ${empresa.telefonoVisible}`}>
+        <Icono nombre="whatsapp" /><span>{empresa.telefonoVisible}</span>
+      </a>
+      <p class="footer-note">Escríbenos por WhatsApp</p>
+    </div>
+    {perfiles.length > 0 && (
+      <div class="footer-group">
+        <h2 class="footer-title">Síguenos</h2>
+        <ul class="footer-social">
+          {perfiles.map((perfil) => (
+            <li><a href={perfil.url} rel="me"><Icono nombre={iconos[perfil.red]} />{perfil.red}</a></li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+  <div class="container footer-bottom">
+    <p>© {new Date().getFullYear()} {empresa.nombre}</p>
+    <a class="back-to-top" href="#inicio">Volver al inicio <span aria-hidden="true">↑</span></a>
+  </div>
+</footer>

@@ -1,0 +1,15 @@
+---
+import { empresa } from '../data/empresa';
+import { imagenes } from '../data/imagenes';
+import Figura from './Figura.astro';
+---
+<section id="historia" class="section history" aria-labelledby="titulo-historia" tabindex="-1">
+  <!-- Un solo grupo: en móvil el retrato acompaña al nombre; en escritorio queda a la derecha, centrado con el texto. -->
+  <div class="container history-layout">
+    <h2 id="titulo-historia">Nuestra historia</h2>
+    <p class="founder-role">Fundador</p>
+    <h3>{empresa.fundador}</h3>
+    <Figura imagen={imagenes.fundador} class="history-portrait" />
+    <p class="history-copy">{empresa.historia}</p>
+  </div>
+</section>

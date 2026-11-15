@@ -1,0 +1,122 @@
+---
+import { empresa, indicacionesUrl } from '../data/empresa';
+import { whatsappUrl } from '../lib/contacto';
+import Icono from './Icono.astro';
+import Figura from './Figura.astro';
+import { imagenes } from '../data/imagenes';
+---
+<section id="inicio" class="hero" aria-labelledby="titulo-principal" tabindex="-1">
+  <div class="container hero-composition">
+    <div class="hero-text">
+      <p class="hero-kicker">{empresa.hero.antetitulo}</p>
+      <h1 id="titulo-principal" aria-label={`${empresa.hero.titulo} ${empresa.hero.prefijo} ${empresa.hero.palabras[0]}`}>
+        <span class="hero-heading-fixed" aria-hidden="true">{empresa.hero.titulo}</span>
+        <span class="hero-heading-variable" aria-hidden="true">
+          <span class="hero-prefix">{empresa.hero.prefijo}</span>
+          <span class="hero-word-window" data-hero-rotation>
+            {empresa.hero.palabras.map((palabra, index) => (
+              <span class:list={['hero-phrase', { 'is-active': index === 0 }]}>{palabra}</span>
+            ))}
+          </span>
+        </span>
+      </h1>
+      <div class="hero-rule-row">
+        <hr class="hero-rule" aria-hidden="true" />
+        <button class="hero-pause" type="button" data-hero-pause data-state="running" aria-label="Pausar animación del titular" hidden>
+          <span class="hero-pause-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <p class="hero-copy">{empresa.portada}</p>
+      <div class="actions hero-actions">
+        <a class="button" href={whatsappUrl(empresa.mensajeCotizacion)}><Icono nombre="whatsapp" />Cotizar por WhatsApp</a>
+        <a class="direction-link" href={indicacionesUrl}>Cómo llegar<Icono nombre="flecha" /></a>
+      </div>
+    </div>
+    <Figura imagen={imagenes.portada} class="hero-image" prioridad />
+  </div>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('#inicio');
+  const region = document.querySelector<HTMLElement>('[data-hero-rotation]');
+  const boton = document.querySelector<HTMLButtonElement>('[data-hero-pause]');
+  const palabras = region ? Array.from(region.querySelectorAll<HTMLElement>('.hero-phrase')) : [];
+  const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (hero && region && boton && palabras.length > 1) {
+    const reposo = 3000;
+    // La compilación minifica «500ms» como «.5s»: se interpreta la unidad para no leer 0,5 ms.
+    const valorTransicion = getComputedStyle(region).getPropertyValue('--hero-transition').trim();
+    const numeroTransicion = parseFloat(valorTransicion);
+    const transicion = Number.isFinite(numeroTransicion) ? (valorTransicion.endsWith('ms') ? numeroTransicion : numeroTransicion * 1000) : 500;
+    let indice = 0;
+    let temporizador: number | undefined;
+    let enTransicion = false;
+    let pausaManual = false;
+    let heroVisible = true;
+
+    const puedeAnimar = () => !reducirMovimiento.matches && !pausaManual && heroVisible && document.visibilityState === 'visible';
+    const cancelar = () => {
+      window.clearTimeout(temporizador);
+      temporizador = undefined;
+    };
+    // Único punto que programa el siguiente cambio: cancela antes de crear, así nunca hay dos temporizadores.
+    const programar = () => {
+      cancelar();
+      if (puedeAnimar()) temporizador = window.setTimeout(cambiar, reposo);
+    };
+    const cambiar = () => {
+      const anterior = palabras[indice]!;
+      indice = (indice + 1) % palabras.length;
+      anterior.classList.replace('is-active', 'is-leaving');
+      palabras[indice]!.classList.add('is-active');
+      enTransicion = true;
+      temporizador = window.setTimeout(() => {
+        anterior.classList.remove('is-leaving');
+        enTransicion = false;
+        programar();
+      }, transicion);
+    };
+    // Una transición en curso termina sola y después consulta el estado; así no se corta a medio gesto.
+    const actualizar = () => {
+      if (enTransicion) return;
+      if (!puedeAnimar()) cancelar();
+      else if (temporizador === undefined) programar();
+    };
+    const reiniciar = () => {
+      cancelar();
+      enTransicion = false;
+      indice = 0;
+      palabras.forEach((palabra, index) => {
+        palabra.classList.remove('is-leaving');
+        palabra.classList.toggle('is-active', index === 0);
+      });
+    };
+    const actualizarBoton = () => {
+      boton.hidden = reducirMovimiento.matches;
+      boton.dataset.state = pausaManual ? 'paused' : 'running';
+      boton.setAttribute('aria-label', `${pausaManual ? 'Reanudar' : 'Pausar'} animación del titular`);
+    };
+
+    boton.addEventListener('click', () => {
+      pausaManual = !pausaManual;
+      actualizarBoton();
+      actualizar();
+    });
+    reducirMovimiento.addEventListener('change', () => {
+      if (reducirMovimiento.matches) reiniciar();
+      actualizarBoton();
+      actualizar();
+    });
+    // Pestaña oculta o portada fuera de pantalla: pausa; al volver, reanuda desde un reposo completo.
+    document.addEventListener('visibilitychange', actualizar);
+    new IntersectionObserver(([entrada]) => {
+      heroVisible = entrada!.isIntersecting;
+      actualizar();
+    }).observe(hero);
+
+    // Ciclo continuo: obra → negocio → hogar → obra… Tres segundos quieta + transición; el primer estado viene del SSR.
+    actualizarBoton();
+    programar();
+  }
+</script>

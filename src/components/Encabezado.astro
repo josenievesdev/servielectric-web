@@ -1,0 +1,67 @@
+---
+import { empresa } from '../data/empresa';
+import { whatsappUrl } from '../lib/contacto';
+import Marca from './Marca.astro';
+import Icono from './Icono.astro';
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <Marca />
+    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="navegacion" hidden>
+      <span>Menú</span>
+      <span class="menu-icon" aria-hidden="true"><span></span><span></span></span>
+    </button>
+    <nav id="navegacion" class="site-nav" aria-label="Navegación principal">
+      <ul class="nav-links">
+        <li><a href="#soluciones">Suministros</a></li>
+        <li><a href="#historia">Nuestra historia</a></li>
+        <li><a href="#ubicacion">Ubicación</a></li>
+      </ul>
+      <a class="button button-small nav-cta" href={whatsappUrl(empresa.mensajeCotizacion)}><Icono nombre="whatsapp" />Cotizar</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('#menu-toggle');
+  const navigation = document.querySelector<HTMLElement>('#navegacion');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const mobile = window.matchMedia('(max-width: 55.999rem)');
+
+  if (toggle && navigation && header) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      navigation.hidden = mobile.matches && !open;
+    };
+
+    toggle.hidden = false;
+    setOpen(false);
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    mobile.addEventListener('change', () => {
+      // Evita dejar el foco dentro de una navegación que acaba de ocultarse.
+      const focusInNav = navigation.contains(document.activeElement);
+      const focusOnToggle = document.activeElement === toggle;
+      setOpen(false);
+      if (mobile.matches && focusInNav) toggle.focus();
+      if (!mobile.matches && focusOnToggle) navigation.querySelector('a')?.focus();
+    });
+    navigation.addEventListener('click', (event) => {
+      if (mobile.matches && event.target instanceof Element) {
+        const link = event.target.closest('a');
+        if (!link) return;
+        setOpen(false);
+        const href = link.getAttribute('href');
+        if (href?.startsWith('#')) document.getElementById(href.slice(1))?.focus({ preventScroll: true });
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mobile.matches && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener('click', (event) => {
+      if (mobile.matches && event.target instanceof Node && !header.contains(event.target)) setOpen(false);
+    });
+  }
+</script>

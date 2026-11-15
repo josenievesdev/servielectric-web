@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" fill="none">
+  <rect width="800" height="640" fill="#eef0f4"/>
+  <g stroke="#505a74" stroke-width="3" stroke-linejoin="round">
+    <path d="M125 124h550v394H125z" fill="#e1e5ec"/>
+    <path d="M151 147h498v348H151z" fill="#f8f9fc"/>
+    <path d="M178 177h444v73H178zm0 100h444v73H178zm0 174h444v24H178z" fill="#e1e5ec"/>
+    <path d="M202 194h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37z" fill="#fff"/>
+    <path d="M202 298h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37zm59 0h37v28h-37z" fill="#fff"/>
+    <path d="M220 211v167c0 46 118 46 118 0v-64m-59-103v193c0 37 178 37 178 0v-90" stroke="#01177d"/>
+    <path d="M398 211v151c0 33 177 33 177 0v-48" stroke="#a6afbf"/>
+    <circle cx="574" cy="463" r="4" fill="#fecf0f" stroke="#fecf0f"/>
+  </g>
+  <path d="M59 92h29m-29 0v29m653-29h29v29M59 519v29h29m624 0h29v-29" stroke="#a6afbf" stroke-width="2"/>
+</svg>

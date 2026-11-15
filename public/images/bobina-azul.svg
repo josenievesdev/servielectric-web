@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 35 760 642" fill="none">
+  <defs>
+    <linearGradient id="body" x1="-200" y1="-210" x2="200" y2="230" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8eb2fb"/><stop offset=".18" stop-color="#4d79d8"/><stop offset=".45" stop-color="#1b44ab"/><stop offset=".78" stop-color="#01177d"/><stop offset="1" stop-color="#000b42"/>
+    </linearGradient>
+    <linearGradient id="face" x1="-175" y1="-220" x2="185" y2="220" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a0c1ff"/><stop offset=".19" stop-color="#5680db"/><stop offset=".45" stop-color="#254cac"/><stop offset="1" stop-color="#01105c"/>
+    </linearGradient>
+    <linearGradient id="tail" x1="245" y1="570" x2="490" y2="628" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#284faa"/><stop offset=".32" stop-color="#4e77ce"/><stop offset=".66" stop-color="#13378f"/><stop offset="1" stop-color="#000d50"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="177" y1="533" x2="247" y2="585" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#914a27"/><stop offset=".25" stop-color="#cf8654"/><stop offset=".5" stop-color="#f3c08c"/><stop offset=".75" stop-color="#ba6c3f"/><stop offset="1" stop-color="#914a27"/>
+    </linearGradient>
+    <radialGradient id="contact"><stop stop-color="#172652" stop-opacity=".28"/><stop offset="1" stop-color="#172652" stop-opacity="0"/></radialGradient>
+    <g id="loop">
+      <ellipse rx="174" ry="218" stroke="#000a3a" stroke-width="27"/>
+      <ellipse rx="174" ry="218" stroke="url(#body)" stroke-width="19"/>
+      <path d="M-146-119c-27 67-35 131-14 198" stroke="#c1d8ff" stroke-opacity=".52" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <ellipse cx="467" cy="625" rx="265" ry="40" fill="url(#contact)"/>
+  <ellipse cx="455" cy="622" rx="190" ry="19" fill="url(#contact)" opacity=".7"/>
+  <g transform="rotate(-18 450 380)">
+    <use href="#loop" x="540" y="302"/>
+    <use href="#loop" x="525" y="309"/>
+    <use href="#loop" x="510" y="316"/>
+    <use href="#loop" x="495" y="323"/>
+    <use href="#loop" x="480" y="330"/>
+    <use href="#loop" x="465" y="337"/>
+    <use href="#loop" x="450" y="344"/>
+    <use href="#loop" x="435" y="351"/>
+    <use href="#loop" x="420" y="358"/>
+    <use href="#loop" x="405" y="365"/>
+    <g transform="translate(390 372)">
+      <ellipse rx="174" ry="218" stroke="#000e4d" stroke-width="25"/>
+      <ellipse rx="174" ry="218" stroke="url(#face)" stroke-width="19"/>
+      <ellipse rx="156" ry="196" stroke="#00105c" stroke-width="22"/>
+      <ellipse rx="156" ry="196" stroke="url(#face)" stroke-width="17"/>
+      <ellipse rx="138" ry="174" stroke="#00105c" stroke-width="22"/>
+      <ellipse rx="138" ry="174" stroke="url(#face)" stroke-width="17"/>
+      <ellipse rx="120" ry="152" stroke="#00105c" stroke-width="22"/>
+      <ellipse rx="120" ry="152" stroke="url(#face)" stroke-width="17"/>
+      <ellipse rx="102" ry="130" stroke="#00105c" stroke-width="22"/>
+      <ellipse rx="102" ry="130" stroke="url(#face)" stroke-width="17"/>
+      <ellipse rx="84" ry="108" stroke="#00105c" stroke-width="22"/>
+      <ellipse rx="84" ry="108" stroke="url(#face)" stroke-width="17"/>
+      <g stroke="#d3e3ff" stroke-opacity=".55" stroke-width="3.2" stroke-linecap="round">
+        <path d="M-145-118c-28 60-33 127-13 185M-129-105c-25 53-29 114-12 167M-113-93c-22 47-26 100-11 148M-98-80c-18 41-22 86-9 128M-82-67c-15 34-17 72-7 107M-67-54c-12 27-14 59-5 86"/>
+      </g>
+    </g>
+  </g>
+  <path d="M470 558c58 61 6 89-76 77-68-10-111-31-151-57" stroke="#000b40" stroke-width="28" stroke-linecap="round"/>
+  <path d="M470 555c58 61 6 89-76 77-68-10-111-31-151-57" stroke="url(#tail)" stroke-width="22" stroke-linecap="round"/>
+  <path d="M475 558c45 48 1 76-79 65-66-9-109-31-148-55" stroke="#a0bdf2" stroke-opacity=".72" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="m241 565-59-37m61 41-65-35m68 39-69-32m72 36-70-30m73 33-66-25m69 29-64-21" stroke="url(#copper)" stroke-width="4" stroke-linecap="round"/>
+  <path d="m237 563-49-31m51 36-55-30m58 34-59-27m62 31-57-24m59 27-54-20" stroke="#f6d3ac" stroke-width="1.3" stroke-linecap="round"/>
+</svg>
