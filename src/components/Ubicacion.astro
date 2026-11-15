@@ -6,13 +6,15 @@ import Icono from './Icono.astro';
 <section id="ubicacion" class="section location" aria-labelledby="titulo-ubicacion" tabindex="-1">
   <div class="container location-layout">
     <div class="location-content">
-      <Icono nombre="ubicacion" />
+      <span class="location-badge" aria-hidden="true"><Icono nombre="ubicacion" /></span>
       <h2 id="titulo-ubicacion">Visítanos en Valledupar</h2>
       <address>{empresa.direccion}</address>
-      <p class="contact-phone">WhatsApp <span>{empresa.telefonoVisible}</span></p>
       <div class="actions location-actions">
-        <a class="button button-primary" href={indicacionesUrl}><Icono nombre="indicaciones" />Cómo llegar</a>
-        <a class="button" href={whatsappUrl(empresa.mensajeCotizacion)}><Icono nombre="whatsapp" />Cotizar por WhatsApp</a>
+        <a class="button button-light" href={indicacionesUrl}><Icono nombre="indicaciones" />Cómo llegar</a>
+        <a class="button button-whatsapp" href={whatsappUrl(empresa.mensajeCotizacion)} aria-label={`Cotizar por WhatsApp: ${empresa.telefonoVisible}`}>
+          <Icono nombre="whatsapp" />
+          <span class="button-stack">Cotizar por WhatsApp<small>{empresa.telefonoVisible}</small></span>
+        </a>
       </div>
     </div>
     <div class="location-map">

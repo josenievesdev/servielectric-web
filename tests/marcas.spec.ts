@@ -38,19 +38,20 @@ for (const width of [390, 768, 1440]) {
     await expect(page.locator('.brands-edge-left span').first()).toHaveCSS('backdrop-filter', 'blur(1px)');
     if (width === 390) expect(bordes[0]!.width).toBeLessThanOrEqual(32);
 
-    const pausa = franja.getByRole('button', { name: 'Pausar movimiento de marcas', exact: true });
-    await pausa.focus();
-    await pausa.press('Space');
-    await expect(franja).toHaveAttribute('data-motion', 'paused');
+    // Sin botón de pausa: el movimiento se detiene mientras el puntero está sobre la franja.
+    await expect(franja.getByRole('button')).toHaveCount(0);
+    await page.locator('.brands-viewport').hover();
+    await expect(page.locator('.brands-track')).toHaveCSS('animation-play-state', 'paused');
     await page.locator('.brands-track').evaluate(async (element) => {
       await Promise.all(element.getAnimations().map((animacion) => animacion.ready));
     });
     const posicionPausada = (await muestra(page)).x;
     await page.waitForTimeout(250);
     expect((await muestra(page)).x).toBeCloseTo(posicionPausada, 2);
-    await page.locator('#marcas').screenshot({ path: `artifacts/ritmo-suministros/despues/marcas-${width}.png`, animations: 'allow' });
+    await page.locator('#marcas').screenshot({ path: `artifacts/suministros-interactivo/marcas-${width}.png`, animations: 'allow' });
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-    await franja.getByRole('button', { name: 'Reanudar movimiento de marcas', exact: true }).press('Enter');
+    await page.mouse.move(2, 2);
+    await expect(page.locator('.brands-track')).toHaveCSS('animation-play-state', 'running');
     await expect(franja).toHaveAttribute('data-motion', 'running');
   });
 }
@@ -65,12 +66,11 @@ test('lista completa estática con movimiento reducido y sin JavaScript', async 
     if (javaScriptEnabled) await expect(franja).toHaveAttribute('data-motion', 'static');
     await expect(franja.locator('.brands-list').first().locator('li')).toHaveCount(6);
     await expect(franja.locator('.brands-copy')).toBeHidden();
-    await expect(franja.locator('.brands-pause')).toBeHidden();
     await expect(franja.locator('.brands-edge').first()).toBeHidden();
     expect(await franja.locator('.brands-track').evaluate((element) => element.getAnimations().length)).toBe(0);
     for (const item of await franja.locator('.brands-list').first().locator('li').all()) await expect(item).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
-    if (javaScriptEnabled) await franja.screenshot({ path: 'artifacts/ritmo-suministros/despues/marcas-reduced-390.png' });
+    if (javaScriptEnabled) await franja.screenshot({ path: 'artifacts/suministros-interactivo/marcas-reduced-390.png' });
     await contexto.close();
   }
 });
@@ -83,7 +83,6 @@ test('deja de desplazarse cuando la lista cabe', async ({ page }) => {
   await page.setViewportSize({ width: 1438, height: 1000 });
   await expect(page.locator('#marcas')).toHaveAttribute('data-motion', 'static');
   await expect(page.locator('.brands-copy')).toBeHidden();
-  await expect(page.locator('.brands-pause')).toBeHidden();
   expect(await page.locator('.brands-track').evaluate((element) => element.getAnimations().length)).toBe(0);
 });
 

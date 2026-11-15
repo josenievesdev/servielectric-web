@@ -23,9 +23,10 @@ try {
       await page.locator('#marcas').evaluate((element) => element.scrollIntoView({ block: 'center' }));
       await page.waitForFunction(() => document.querySelector('#marcas')?.getAttribute('data-motion') === 'running');
       await page.waitForTimeout(4500);
-      await page.getByRole('button', { name: 'Pausar movimiento de marcas', exact: true }).press('Space');
+      // Sin botón de pausa: el puntero sobre la franja la detiene y al salir continúa.
+      await page.locator('.brands-viewport').hover();
       await page.waitForTimeout(2000);
-      await page.getByRole('button', { name: 'Reanudar movimiento de marcas', exact: true }).press('Enter');
+      await page.mouse.move(4, 4);
       await page.waitForTimeout(4500);
     }
     await contexto.close();

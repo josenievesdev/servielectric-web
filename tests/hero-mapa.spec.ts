@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { existsSync } from 'node:fs';
 
-const capturas = 'artifacts/ritmo-suministros/despues';
+const capturas = 'artifacts/suministros-interactivo';
 const fotoHero = existsSync('public/images/portada.jpg');
 
 async function posiciones(page: Page) {
-  return page.locator('.hero-prefix, .hero-rule, .hero-pause, .hero-copy, .hero-actions, .hero-image').evaluateAll((elements) => elements.map((element) => {
+  return page.locator('.hero-prefix, .hero-rule, .hero-copy, .hero-actions, .hero-image').evaluateAll((elements) => elements.map((element) => {
     const box = element.getBoundingClientRect();
     return { x: box.x, y: box.y + scrollY, width: box.width, height: box.height };
   }));
@@ -86,13 +86,13 @@ for (const width of [390, 768, 1440]) {
   });
 }
 
-test('pestaña oculta y pausa manual sin temporizadores duplicados', async ({ page }) => {
+test('pestaña oculta, puntero sobre el titular y sin temporizadores duplicados', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.clock.install({ time: new Date('2026-11-15T12:00:00Z') });
   await page.clock.pauseAt(new Date('2026-11-15T12:00:01Z'));
   await page.goto('/');
-  const pausa = page.getByRole('button', { name: 'Pausar animación del titular', exact: true });
-  await expect(pausa).toBeVisible();
+  // Sin botones de pausa visibles en las animaciones.
+  await expect(page.locator('#inicio button')).toHaveCount(0);
   await page.clock.runFor(3600);
   await expect(activa(page)).toHaveText('negocio.');
 
@@ -120,27 +120,28 @@ test('pestaña oculta y pausa manual sin temporizadores duplicados', async ({ pa
   await page.clock.runFor(500 + 3500 * 10 - 1);
   expect(await page.evaluate(() => (window as unknown as { cambios: number }).cambios)).toBe(10);
 
-  // La pausa manual se respeta aunque la pestaña se oculte y vuelva.
+  // Pausa discreta: con el puntero sobre el titular no cambia; al salir espera un reposo completo.
   await page.clock.runFor(600);
-  await pausa.press('Enter');
-  const reanudar = page.getByRole('button', { name: 'Reanudar animación del titular', exact: true });
-  await expect(reanudar).toBeFocused();
+  const titular = await page.locator('h1').boundingBox();
+  await page.mouse.move(titular!.x + titular!.width / 2, titular!.y + titular!.height / 2);
   const quieta = await activa(page).textContent();
+  await page.clock.runFor(20000);
+  await expect(activa(page)).toHaveText(quieta!);
+  // Ocultar y mostrar la pestaña con el puntero encima no reanuda el ciclo.
   await visibilidad(page, 'hidden');
   await page.clock.runFor(1000);
   await visibilidad(page, 'visible');
-  await page.clock.runFor(20000);
+  await page.clock.runFor(10000);
   await expect(activa(page)).toHaveText(quieta!);
-  await reanudar.press('Space');
-  await expect(pausa).toBeFocused();
+  await page.mouse.move(5, 880);
   await page.clock.runFor(2999);
   await expect(activa(page)).toHaveText(quieta!);
   await page.clock.runFor(1);
   await expect(activa(page)).not.toHaveText(quieta!);
-  // Pausa a mitad de transición: el gesto termina y no se programa otro cambio.
+  // Puntero encima a mitad de transición: el gesto termina y no se programa otro cambio.
   await page.clock.runFor(3500 + 200);
   await expect(page.locator('.hero-phrase.is-leaving')).toHaveCount(1);
-  await pausa.click();
+  await page.mouse.move(titular!.x + titular!.width / 2, titular!.y + titular!.height / 2);
   await page.clock.runFor(600);
   await expect(page.locator('.hero-phrase.is-leaving')).toHaveCount(0);
   const final = await activa(page).textContent();
@@ -177,7 +178,6 @@ test('movimiento reducido estático y cancelación de una secuencia en curso', a
   await expect(activa(page)).toHaveText('obra.');
   await expect(activa(page)).toHaveCSS('transform', 'none');
   await expect(activa(page)).toHaveCSS('transition-duration', '0s');
-  await expect(page.locator('[data-hero-pause]')).toBeHidden();
 
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.reload();
@@ -187,7 +187,6 @@ test('movimiento reducido estático y cancelación de una secuencia en curso', a
   await page.clock.resume();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(activa(page)).toHaveText('obra.');
-  await expect(page.locator('[data-hero-pause]')).toBeHidden();
   // Espera real deliberada: con el ciclo activo habría al menos un cambio en 4 s.
   await page.waitForTimeout(4000);
   await expect(activa(page)).toHaveText('obra.');

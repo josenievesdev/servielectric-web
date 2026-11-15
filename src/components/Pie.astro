@@ -6,33 +6,39 @@ import Icono from './Icono.astro';
 
 const perfiles = perfilesOficiales.filter((perfil) => perfil.url.trim() !== '');
 const iconos = { Instagram: 'instagram', LinkedIn: 'linkedin' } as const;
+const correo = empresa.correo.trim();
 ---
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
       <Marca />
+      <p class="footer-slogan">{empresa.eslogan}</p>
       <p>{empresa.titular} {empresa.trayectoria.toLowerCase()}.</p>
     </div>
     <div class="footer-group">
-      <h2 class="footer-title">Ventas</h2>
-      <a class="footer-phone" href={whatsappUrl(empresa.mensajeCotizacion)} aria-label={`Escribir a ventas por WhatsApp: ${empresa.telefonoVisible}`}>
-        <Icono nombre="whatsapp" /><span>{empresa.telefonoVisible}</span>
+      <h2 class="footer-title">Ventas y cotizaciones</h2>
+      <a class="button button-whatsapp footer-whatsapp" href={whatsappUrl(empresa.mensajeCotizacion)} aria-label={`Escribir a ventas por WhatsApp: ${empresa.telefonoVisible}`}>
+        <Icono nombre="whatsapp" />
+        <span class="button-stack">Escríbenos por WhatsApp<small>{empresa.telefonoVisible}</small></span>
       </a>
-      <p class="footer-note">Escríbenos por WhatsApp</p>
     </div>
-    {perfiles.length > 0 && (
+    {(perfiles.length > 0 || correo) && (
       <div class="footer-group">
-        <h2 class="footer-title">Síguenos</h2>
+        <h2 class="footer-title">{correo ? 'Síguenos y escríbenos' : 'Síguenos'}</h2>
         <ul class="footer-social">
           {perfiles.map((perfil) => (
-            <li><a href={perfil.url} rel="me"><Icono nombre={iconos[perfil.red]} />{perfil.red}</a></li>
+            <li><a class="social-button" href={perfil.url} rel="me noopener" target="_blank"><Icono nombre={iconos[perfil.red]} /><span>{perfil.red}</span></a></li>
           ))}
+          {correo && <li><a class="social-button" href={`mailto:${correo}`}><Icono nombre="correo" /><span>Correo</span></a></li>}
         </ul>
       </div>
     )}
   </div>
   <div class="container footer-bottom">
     <p>© {new Date().getFullYear()} {empresa.nombre}</p>
-    <a class="back-to-top" href="#inicio">Volver al inicio <span aria-hidden="true">↑</span></a>
+    <a class="back-to-top" href="#inicio">
+      <span class="back-to-top-icon" aria-hidden="true"><Icono nombre="arriba" /></span>
+      Volver arriba
+    </a>
   </div>
 </footer>

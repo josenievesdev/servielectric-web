@@ -1,0 +1,183 @@
+---
+import type { AreaId } from '../data/soluciones';
+
+interface Props {
+  area: AreaId;
+}
+
+const { area } = Astro.props;
+
+// Engranaje: dientes trapezoidales calculados para que su giro sea suave y regular.
+function engranaje(cx: number, cy: number, exterior: number, interior: number, dientes: number) {
+  const paso = (Math.PI * 2) / dientes;
+  const punto = (radio: number, angulo: number) => `${(cx + radio * Math.cos(angulo)).toFixed(2)} ${(cy + radio * Math.sin(angulo)).toFixed(2)}`;
+  const tramos: string[] = [];
+  for (let i = 0; i < dientes; i += 1) {
+    const a = i * paso;
+    tramos.push(`${i === 0 ? 'M' : 'L'}${punto(interior, a)}`, `L${punto(exterior, a + paso * 0.18)}`, `L${punto(exterior, a + paso * 0.48)}`, `L${punto(interior, a + paso * 0.66)}`);
+  }
+  return `${tramos.join(' ')} Z`;
+}
+
+const columnas = [202, 226, 250, 274, 298];
+const puertos = [0, 1, 2, 3, 4, 5].map((i) => 79 + i * 15.5);
+const modulos = [66, 100, 134, 168];
+const lamparas = [350, 366, 382, 398].flatMap((x) => [64, 80].map((y) => ({ x, y })));
+---
+<svg class:list={['ilustracion', `ilustracion-${area}`]} viewBox="0 0 480 300" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id={`haz-${area}`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fecf0f" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#fecf0f" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  {area === 'media-baja-tension' && (
+    <g>
+      <line class="il-guia" x1="24" y1="282" x2="456" y2="282" />
+      <path class="il-guia" d="M366 40 V260 M360 40 H372 M360 260 H372" />
+      <path class="il-linea il-trazo" pathLength="1" d="M24 150 H62 M154 150 H176" style="--d:.05s" />
+      <circle class="il-cuerpo il-trazo" pathLength="1" cx="92" cy="150" r="30" style="--d:.15s" />
+      <circle class="il-cuerpo il-trazo" pathLength="1" cx="124" cy="150" r="30" style="--d:.25s" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="176" y="40" width="160" height="220" rx="10" style="--d:0s" />
+      <rect class="il-tenue il-trazo" pathLength="1" x="188" y="52" width="136" height="196" rx="6" style="--d:.2s" />
+      <rect class="il-linea il-trazo" pathLength="1" x="226" y="66" width="60" height="38" rx="4" style="--d:.3s" />
+      <rect class="il-solido il-palanca" x="250" y="74" width="12" height="18" rx="2" style="--d:.95s" />
+      <circle class="il-led" cx="304" cy="76" r="3.5" style="--d:1.35s" />
+      <circle class="il-led" cx="304" cy="90" r="3.5" style="--d:1.45s" />
+      <path class="il-tenue il-trazo" pathLength="1" d="M196 139 H316 M196 195 H316" style="--d:.35s" />
+      {[124, 180].map((fila, f) => columnas.map((x, c) => (
+        <g>
+          <rect class="il-linea il-trazo" pathLength="1" x={x} y={fila} width="16" height="30" rx="3" style={`--d:${(0.4 + f * 0.15 + c * 0.05).toFixed(2)}s`} />
+          <rect class="il-solido il-palanca" x={x + 4} y={fila + 6} width="8" height="10" rx="1.5" style={`--d:${(1.05 + f * 0.25 + c * 0.06).toFixed(2)}s`} />
+        </g>
+      )))}
+      <path class="il-linea il-trazo" pathLength="1" d="M226 260 V282 M256 260 V282 M286 260 V282" style="--d:.6s" />
+      <path class="il-pulso" pathLength="1" d="M24 150 H62" style="--d:1.2s" />
+      <path class="il-pulso" pathLength="1" d="M154 150 H176" style="--d:1.55s" />
+    </g>
+  )}
+
+  {area === 'iluminacion' && (
+    <g>
+      <polygon class="il-haz" points="200,76 228,76 300,268 128,268" fill={`url(#haz-${area})`} style="--d:1.05s" />
+      <polygon class="il-haz" points="340,92 404,92 452,268 236,268" fill={`url(#haz-${area})`} style="--d:1.25s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M24 268 H456" style="--d:0s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M120 268 V96 C120 78 130 70 150 70 H192" style="--d:.1s" />
+      <path class="il-cuerpo il-trazo" pathLength="1" d="M190 64 H238 L230 76 H198 Z" style="--d:.45s" />
+      <line class="il-luz" x1="201" y1="76" x2="227" y2="76" style="--d:1.05s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M372 268 V92" style="--d:.2s" />
+      <path class="il-tenue il-trazo" pathLength="1" d="M364 140 L380 156 M380 140 L364 156 M364 180 L380 196 M380 180 L364 196 M364 220 L380 236 M380 220 L364 236" style="--d:.5s" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="336" y="52" width="72" height="40" rx="5" style="--d:.35s" />
+      {lamparas.map((l, i) => <circle class="il-lampara" cx={l.x} cy={l.y} r="5" style={`--d:${(1.2 + i * 0.03).toFixed(2)}s`} />)}
+      <path class="il-guia" d="M128 284 H300 M236 292 H452" />
+    </g>
+  )}
+
+  {area === 'automatizacion' && (
+    <g>
+      <line class="il-guia" x1="24" y1="262" x2="456" y2="262" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="52" y="64" width="156" height="172" rx="8" style="--d:0s" />
+      <path class="il-tenue il-trazo" pathLength="1" d="M52 88 H208" style="--d:.2s" />
+      {modulos.map((x, m) => (
+        <g>
+          <rect class="il-linea il-trazo" pathLength="1" x={x} y="100" width="26" height="120" rx="3" style={`--d:${(0.25 + m * 0.08).toFixed(2)}s`} />
+          {[114, 128, 142].map((y, l) => <circle class="il-led il-led-intermitente" cx={x + 13} cy={y} r="3.5" style={`--d:${(1.1 + m * 0.12 + l * 0.05).toFixed(2)}s`} />)}
+          <rect class="il-tenue il-trazo" pathLength="1" x={x + 4} y="196" width="18" height="16" rx="2" style={`--d:${(0.5 + m * 0.08).toFixed(2)}s`} />
+        </g>
+      ))}
+      <path class="il-linea il-trazo" pathLength="1" d="M208 136 C248 136 256 132 296 132 M208 164 C248 164 256 168 296 168" style="--d:.55s" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="296" y="116" width="48" height="68" rx="8" style="--d:.7s" />
+      <path class="il-tenue il-trazo" pathLength="1" d="M308 126 V174 M320 126 V174 M332 126 V174" style="--d:.85s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M344 150 H362" style="--d:.9s" />
+      <g class="il-engranaje" style="--giro:72deg">
+        <path class="il-cuerpo il-trazo" pathLength="1" d={engranaje(400, 150, 40, 32, 10)} style="--d:.8s" />
+        <circle class="il-linea il-trazo" pathLength="1" cx="400" cy="150" r="10" style="--d:1s" />
+      </g>
+      <g class="il-engranaje" style="--giro:-144deg">
+        <path class="il-cuerpo il-trazo" pathLength="1" d={engranaje(438.2, 111.8, 22, 15, 5)} style="--d:.95s" />
+        <circle class="il-linea il-trazo" pathLength="1" cx="438.2" cy="111.8" r="5" style="--d:1.1s" />
+      </g>
+      <path class="il-pulso" pathLength="1" d="M208 136 C248 136 256 132 296 132" style="--d:1.25s" />
+      <path class="il-pulso" pathLength="1" d="M208 164 C248 164 256 168 296 168" style="--d:1.45s" />
+    </g>
+  )}
+
+  {area === 'redes' && (
+    <g>
+      <line class="il-guia" x1="24" y1="272" x2="456" y2="272" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="56" y="40" width="136" height="220" rx="8" style="--d:0s" />
+      <path class="il-tenue il-trazo" pathLength="1" d="M66 52 V248 M182 52 V248" style="--d:.15s" />
+      {[60, 152].map((y, p) => (
+        <g>
+          <rect class="il-linea il-trazo" pathLength="1" x="72" y={y} width="104" height="28" rx="3" style={`--d:${(0.25 + p * 0.2).toFixed(2)}s`} />
+          {puertos.map((x, i) => <rect class="il-tenue il-trazo" pathLength="1" x={x - 5} y={y + 9} width="10" height="10" rx="1.5" style={`--d:${(0.45 + p * 0.2 + i * 0.03).toFixed(2)}s`} />)}
+        </g>
+      ))}
+      <rect class="il-linea il-trazo" pathLength="1" x="72" y="102" width="104" height="34" rx="3" style="--d:.35s" />
+      {puertos.map((x, i) => (
+        <g>
+          <circle class="il-led il-led-intermitente" cx={x} cy="110" r="2.5" style={`--d:${(1.15 + i * 0.07).toFixed(2)}s`} />
+          <rect class="il-tenue il-trazo" pathLength="1" x={x - 5} y="116" width="10" height="10" rx="1.5" style={`--d:${(0.55 + i * 0.03).toFixed(2)}s`} />
+        </g>
+      ))}
+      <rect class="il-tenue il-trazo" pathLength="1" x="72" y="196" width="104" height="12" rx="3" style="--d:.6s" />
+      <rect class="il-linea il-trazo" pathLength="1" x="72" y="222" width="104" height="24" rx="3" style="--d:.65s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M176 112 C236 112 252 78 318 78" style="--d:.7s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M176 120 C250 120 300 152 388 152" style="--d:.8s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M176 128 C236 128 252 214 322 214" style="--d:.9s" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="318" y="54" width="72" height="48" rx="5" style="--d:.85s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M346 102 L342 116 H366 L362 102" style="--d:1s" />
+      <circle class="il-cuerpo il-trazo" pathLength="1" cx="410" cy="152" r="20" style="--d:.95s" />
+      <circle class="il-led" cx="410" cy="152" r="4" style="--d:1.5s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M392 122 Q410 108 428 122 M384 112 Q410 92 436 112" style="--d:1.1s" />
+      <rect class="il-cuerpo il-trazo" pathLength="1" x="322" y="196" width="60" height="38" rx="4" style="--d:1s" />
+      <path class="il-linea il-trazo" pathLength="1" d="M310 240 H394 L388 248 H316 Z" style="--d:1.1s" />
+      <path class="il-pulso" pathLength="1" d="M176 112 C236 112 252 78 318 78" style="--d:1.3s" />
+      <path class="il-pulso" pathLength="1" d="M176 120 C250 120 300 152 388 152" style="--d:1.45s" />
+      <path class="il-pulso" pathLength="1" d="M176 128 C236 128 252 214 322 214" style="--d:1.6s" />
+    </g>
+  )}
+</svg>
+
+<style>
+  .ilustracion { display: block; width: 100%; height: 100%; }
+  .il-linea, .il-cuerpo, .il-tenue { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .il-linea, .il-cuerpo { stroke: rgb(255 255 255 / 0.92); stroke-width: 2; }
+  .il-cuerpo { fill: rgb(255 255 255 / 0.07); }
+  .il-tenue { stroke: rgb(255 255 255 / 0.34); stroke-width: 1.5; }
+  .il-guia { fill: none; stroke: rgb(255 255 255 / 0.2); stroke-width: 1.25; stroke-dasharray: 3 7; }
+  .il-solido { fill: rgb(255 255 255 / 0.88); }
+  /* Estado final (también sin JavaScript o con movimiento reducido): todo encendido. */
+  .il-led, .il-lampara { fill: var(--color-accent); }
+  .il-luz { stroke: var(--color-accent); stroke-width: 3; stroke-linecap: round; }
+  .il-haz { opacity: 0.9; }
+  .il-pulso { fill: none; stroke: var(--color-accent); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 0.1 2; stroke-dashoffset: 0.2; }
+  .il-engranaje { transform-box: fill-box; transform-origin: center; }
+
+  /* Al desplegar el área (.is-animated en la fila): se traza el dibujo y luego se enciende. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-animated) .il-trazo { stroke-dasharray: 1; animation: il-trazar 1.15s var(--ease-out) both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-cuerpo.il-trazo { animation: il-trazar 1.15s var(--ease-out) both, il-relleno 0.7s ease-out both; animation-delay: var(--d, 0s), calc(var(--d, 0s) + 0.6s); }
+    :global(.is-animated) .il-guia { animation: il-aparecer 0.9s ease-out both 0.1s; }
+    :global(.is-animated) .il-palanca { animation: il-palanca 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-led { animation: il-encender 0.9s steps(1, end) both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-led-intermitente { animation: il-encender 0.9s steps(1, end) both, il-parpadeo 0.7s steps(1, end) 2; animation-delay: var(--d, 0s), calc(var(--d, 0s) + 1s); }
+    :global(.is-animated) .il-lampara { animation: il-encender 1s steps(1, end) both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-luz { animation: il-encender-luz 1s steps(1, end) both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-haz { animation: il-encender-haz 1.3s ease-out both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-pulso { animation: il-pulso 1.1s cubic-bezier(0.45, 0, 0.55, 1) 2 both; animation-delay: var(--d, 0s); }
+    :global(.is-animated) .il-engranaje { animation: il-girar 2.4s var(--ease-out) both 1.15s; }
+  }
+  @keyframes il-trazar { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes il-relleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
+  @keyframes il-aparecer { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes il-palanca { from { transform: translateY(7px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes il-encender { 0% { fill: rgb(255 255 255 / 0.22); } 12% { fill: var(--color-accent); } 20% { fill: rgb(255 255 255 / 0.22); } 34%, 100% { fill: var(--color-accent); } }
+  @keyframes il-encender-luz { 0% { stroke: rgb(255 255 255 / 0.3); } 12% { stroke: var(--color-accent); } 20% { stroke: rgb(255 255 255 / 0.3); } 34%, 100% { stroke: var(--color-accent); } }
+  @keyframes il-encender-haz { 0% { opacity: 0; } 10% { opacity: 0.55; } 18% { opacity: 0.05; } 32% { opacity: 0.75; } 100% { opacity: 0.9; } }
+  @keyframes il-parpadeo { 0% { fill: rgb(255 255 255 / 0.22); } 50%, 100% { fill: var(--color-accent); } }
+  /* Periodo 2,1: el trazo empieza y termina fuera del cable, sin dejar un punto en los extremos. */
+  @keyframes il-pulso { from { stroke-dashoffset: 0.2; } to { stroke-dashoffset: -1.1; } }
+  @keyframes il-girar { from { transform: rotate(0deg); } to { transform: rotate(var(--giro, 72deg)); } }
+</style>

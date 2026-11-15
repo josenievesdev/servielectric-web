@@ -40,9 +40,6 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
           <div class="brands-edge brands-edge-left" aria-hidden="true"><span></span><span></span><span></span></div>
           <div class="brands-edge brands-edge-right" aria-hidden="true"><span></span><span></span><span></span></div>
         </div>
-        <div class="brands-controls">
-          <button class="brands-pause" type="button" aria-label="Pausar movimiento de marcas" aria-pressed="false" hidden>Pausar</button>
-        </div>
       </div>
     </div>
   </section>
@@ -54,15 +51,7 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
     const pista = franja.querySelector<HTMLElement>('.brands-track')!;
     const original = franja.querySelector<HTMLElement>('.brands-list')!;
     const copia = franja.querySelector<HTMLElement>('.brands-copy')!;
-    const boton = franja.querySelector<HTMLButtonElement>('.brands-pause')!;
     const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let pausada = false;
-
-    const actualizarBoton = () => {
-      boton.textContent = pausada ? 'Reanudar' : 'Pausar';
-      boton.setAttribute('aria-label', `${pausada ? 'Reanudar' : 'Pausar'} movimiento de marcas`);
-      boton.setAttribute('aria-pressed', String(pausada));
-    };
     const medir = () => {
       copia.hidden = true;
       franja.dataset.motion = reducirMovimiento.matches ? 'static' : 'measuring';
@@ -70,18 +59,10 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
       const mover = !reducirMovimiento.matches && ancho > ventana.clientWidth;
       pista.style.setProperty('--brands-travel', `${ancho}px`);
       pista.style.setProperty('--brands-duration', `${ancho / 24}s`);
-      franja.dataset.motion = mover ? (pausada ? 'paused' : 'running') : 'static';
+      franja.dataset.motion = mover ? 'running' : 'static';
       copia.hidden = !mover;
-      if (!mover && document.activeElement === boton) franja.focus();
-      boton.hidden = !mover;
-      actualizarBoton();
     };
 
-    boton.addEventListener('click', () => {
-      pausada = !pausada;
-      franja.dataset.motion = pausada ? 'paused' : 'running';
-      actualizarBoton();
-    });
     reducirMovimiento.addEventListener('change', medir);
     Promise.all([
       document.fonts.ready,
@@ -112,10 +93,6 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
   .brands-demo-serif { font-family: Georgia, serif; font-weight: 500; font-style: italic; }
   .brands-demo-compacta { font-size: 1.8rem; letter-spacing: -0.06em; }
   .brands-demo-espaciada { font-family: var(--font-body); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
-  .brands-controls { display: flex; justify-content: flex-end; }
-  .brands-pause { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 0.75rem; border: 1px solid var(--color-border); border-radius: 4px; background: transparent; color: var(--color-primary); font-size: 0.75rem; cursor: pointer; }
-  .brands-pause::before { content: 'Ⅱ'; font-size: 0.875rem; }
-  .brands-pause[aria-pressed='true']::before { content: '▷'; }
   .brands-edge { display: none; position: absolute; inset-block: 0; width: 1.75rem; z-index: 1; pointer-events: none; background: linear-gradient(var(--mask-direction), var(--brands-surface), transparent); }
   .brands-edge-left { left: 0; --mask-direction: to right; }
   .brands-edge-right { right: 0; --mask-direction: to left; }
@@ -124,7 +101,8 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
   [data-motion='measuring'] .brands-track, [data-motion='running'] .brands-track, [data-motion='paused'] .brands-track { width: max-content; }
   [data-motion='measuring'] .brands-list, [data-motion='running'] .brands-list, [data-motion='paused'] .brands-list { flex-wrap: nowrap; justify-content: flex-start; width: max-content; padding-right: var(--brands-gap); }
   [data-motion='running'] .brands-track, [data-motion='paused'] .brands-track { animation: brands-travel var(--brands-duration) linear infinite; }
-  [data-motion='paused'] .brands-track, [data-visible='false'] .brands-track { animation-play-state: paused; }
+  /* Sin botón visible: el movimiento se detiene al pasar el puntero o fuera de pantalla. */
+  [data-motion='running'] .brands-viewport:hover .brands-track, [data-visible='false'] .brands-track { animation-play-state: paused; }
   [data-motion='running'] .brands-edge, [data-motion='paused'] .brands-edge { display: block; }
   @keyframes brands-travel { to { transform: translateX(calc(-1 * var(--brands-travel))); } }
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -148,6 +126,6 @@ const lista: readonly MarcaVisual[] = demostracion ? marcasDeMuestra : aprobadas
   @media (prefers-reduced-motion: reduce) {
     .brands-track { animation: none !important; transform: none !important; width: 100% !important; }
     .brands-list { flex-wrap: wrap !important; justify-content: center !important; width: 100% !important; padding: 0 !important; }
-    .brands-copy, .brands-edge, .brands-pause { display: none !important; }
+    .brands-copy, .brands-edge { display: none !important; }
   }
 </style>

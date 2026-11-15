@@ -4,7 +4,7 @@ import { whatsappUrl } from '../lib/contacto';
 import Marca from './Marca.astro';
 import Icono from './Icono.astro';
 ---
-<header class="site-header">
+<header class="site-header" data-header>
   <div class="container header-inner">
     <Marca />
     <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="navegacion" hidden>
@@ -20,9 +20,33 @@ import Icono from './Icono.astro';
       <a class="button button-small nav-cta" href={whatsappUrl(empresa.mensajeCotizacion)}><Icono nombre="whatsapp" />Cotizar</a>
     </nav>
   </div>
+  <!-- Barra de lectura: se llena al bajar por la página. -->
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
 </header>
 
 <script>
+  // Encabezado fijo: al bajar se vuelve translúcido y la barra amarilla muestra el avance de lectura.
+  const cabecera = document.querySelector<HTMLElement>('[data-header]');
+  if (cabecera) {
+    let pendiente = false;
+    const medir = () => {
+      pendiente = false;
+      const recorrido = document.documentElement.scrollHeight - window.innerHeight;
+      const avance = recorrido > 0 ? Math.min(1, Math.max(0, window.scrollY / recorrido)) : 0;
+      cabecera.style.setProperty('--avance', avance.toFixed(4));
+      cabecera.toggleAttribute('data-scrolled', window.scrollY > 8);
+    };
+    const solicitar = () => {
+      if (pendiente) return;
+      pendiente = true;
+      requestAnimationFrame(medir);
+    };
+    window.addEventListener('scroll', solicitar, { passive: true });
+    window.addEventListener('resize', solicitar);
+    new ResizeObserver(solicitar).observe(document.body);
+    medir();
+  }
+
   const toggle = document.querySelector<HTMLButtonElement>('#menu-toggle');
   const navigation = document.querySelector<HTMLElement>('#navegacion');
   const header = document.querySelector<HTMLElement>('.site-header');

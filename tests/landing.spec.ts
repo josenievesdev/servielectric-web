@@ -13,7 +13,7 @@ const mensajes = [
 ];
 const whatsappUrl = (mensaje: string) => `https://wa.me/573150605678?text=${encodeURIComponent(mensaje)}`;
 const fotoHero = existsSync('public/images/portada.jpg');
-const capturas = 'artifacts/ritmo-suministros/despues';
+const capturas = 'artifacts/suministros-interactivo';
 
 async function sinDesbordamiento(page: Page) {
   expect(await page.evaluate(() => ({ ancho: innerWidth, contenido: document.documentElement.scrollWidth })))
@@ -37,6 +37,14 @@ async function contrasteFilas(page: Page) {
   });
   expect(contrastes).toHaveLength(8);
   for (const contraste of contrastes) expect(contraste).toBeGreaterThanOrEqual(4.5);
+}
+
+// El desplazamiento suave termina antes de medir posiciones bajo el encabezado fijo.
+async function esperarScroll(page: Page) {
+  await page.waitForFunction(() => new Promise<boolean>((resolver) => {
+    const inicial = window.scrollY;
+    setTimeout(() => resolver(window.scrollY === inicial), 150);
+  }));
 }
 
 async function caja(page: Page, selector: string) {
@@ -70,13 +78,14 @@ async function comprobarComposicion(page: Page, width: number) {
   const proporcion = width >= 640 && width < 896 ? 5 / 2 : 3 / 2;
   expect(foto.ancho / foto.alto).toBeCloseTo(proporcion, 1);
 
-  const filas = await page.locator('.solution').evaluateAll((elementos) => elementos.map((fila) => {
+  const filas = await page.locator('.solution-header').evaluateAll((elementos) => elementos.map((fila) => {
     const rect = (selector: string) => fila.querySelector(selector)!.getBoundingClientRect();
-    const [nombre, resumen, enlace] = [rect('h3'), rect('.solution-summary'), rect('.solution-link')];
-    return { nombre: { x: nombre.x, derecha: nombre.right, y: nombre.y, abajo: nombre.bottom }, resumen: { x: resumen.x, derecha: resumen.right, y: resumen.y }, enlace: { x: enlace.x, derecha: enlace.right }, fila: fila.getBoundingClientRect().height };
+    const [nombre, resumen, icono] = [rect('h3'), rect('.solution-summary'), rect('.solution-icon')];
+    return { nombre: { x: nombre.x, derecha: nombre.right, y: nombre.y, abajo: nombre.bottom }, resumen: { x: resumen.x, derecha: resumen.right, y: resumen.y }, icono: { x: icono.x, derecha: icono.right }, fila: fila.getBoundingClientRect().height };
   }));
+  expect(filas).toHaveLength(4);
   for (const fila of filas) {
-    expect(fila.enlace.x).toBeGreaterThan(fila.resumen.derecha - 1);
+    expect(fila.icono.x).toBeGreaterThan(fila.resumen.derecha - 1);
     expect(fila.fila).toBeLessThan(width >= 896 ? 120 : 170);
     if (width >= 896) expect(fila.resumen.x).toBeGreaterThan(fila.nombre.derecha);
     else expect(fila.resumen.y).toBeGreaterThanOrEqual(fila.nombre.abajo - 1);
@@ -183,7 +192,13 @@ test('portada estática, metadatos y destinos comerciales', async ({ page }) => 
   const pie = page.locator('footer');
   const telefono = pie.getByRole('link', { name: 'Escribir a ventas por WhatsApp: +57 315 060 5678', exact: true });
   await expect(telefono).toHaveAttribute('href', whatsappUrl(mensajes[0]!));
-  await expect(telefono).toHaveText('+57 315 060 5678');
+  await expect(telefono).toContainText('Escríbenos por WhatsApp');
+  await expect(telefono).toContainText('+57 315 060 5678');
+  await expect(page.locator('#ubicacion').getByRole('link', { name: 'Cotizar por WhatsApp: +57 315 060 5678', exact: true })).toHaveAttribute('href', whatsappUrl(mensajes[0]!));
+  // El número ya no aparece suelto: solo dentro de los botones de WhatsApp.
+  for (const texto of await page.getByText('+57 315 060 5678', { exact: true }).all()) {
+    expect(await texto.evaluate((elemento) => !!elemento.closest('a.button-whatsapp'))).toBe(true);
+  }
   const perfiles = perfilesOficiales.filter((perfil) => perfil.url.trim() !== '');
   const enlacesPerfiles = pie.locator('.footer-social a');
   await expect(enlacesPerfiles).toHaveCount(perfiles.length);
@@ -191,7 +206,7 @@ test('portada estática, metadatos y destinos comerciales', async ({ page }) => 
     await expect(enlacesPerfiles.nth(index)).toHaveAttribute('href', perfil.url);
     await expect(enlacesPerfiles.nth(index)).toHaveAccessibleName(perfil.red);
   }
-  await expect(pie.getByRole('link', { name: 'Volver al inicio', exact: true })).toHaveAttribute('href', '#inicio');
+  await expect(pie.getByRole('link', { name: 'Volver arriba', exact: true })).toHaveAttribute('href', '#inicio');
   await expect(pie).not.toContainText('Calle 19');
 });
 
@@ -223,9 +238,8 @@ for (const width of [390, 768, 1440]) {
     await page.keyboard.press('Enter');
     await expect(page.locator('main')).toBeFocused();
     await page.keyboard.press('Tab');
-    await expect(page.getByRole('button', { name: 'Pausar animación del titular', exact: true })).toBeFocused();
-    await page.keyboard.press('Tab');
     await expect(page.locator('#inicio').getByRole('link', { name: 'Cotizar por WhatsApp', exact: true })).toBeFocused();
+    await expect(page.locator('button[data-hero-pause], .brands-pause')).toHaveCount(0);
     const focus = await page.locator(':focus').evaluate((element) => {
       const style = getComputedStyle(element);
       return { style: style.outlineStyle, width: style.outlineWidth };
@@ -233,7 +247,9 @@ for (const width of [390, 768, 1440]) {
     expect(focus.style).toBe('solid');
     expect(focus.width).toBe('3px');
     for (const control of await page.locator('a:visible, button:visible').all()) {
-      const box = await control.boundingBox();
+      // Los botones de Suministros extienden su área táctil a toda la fila con ::after.
+      const extendido = await control.evaluate((elemento) => elemento.classList.contains('solution-toggle'));
+      const box = extendido ? await control.locator('xpath=ancestor::div[contains(@class, "solution-header")]').boundingBox() : await control.boundingBox();
       expect(box?.height, (await control.textContent()) ?? 'Control interactivo').toBeGreaterThanOrEqual(44);
       expect(box?.width, (await control.textContent()) ?? 'Control interactivo').toBeGreaterThanOrEqual(44);
     }
@@ -272,30 +288,67 @@ for (const width of [390, 768, 1440]) {
     await expect(page).toHaveURL(/#soluciones$/);
     await expect(page.getByRole('heading', { name: 'Suministros y servicios eléctricos' })).toBeInViewport();
 
-    // Las cuatro áreas se leen sin abrir nada: nombre, línea breve y su consulta con el mensaje correcto.
+    // Las cuatro áreas se reconocen cerradas; en escritorio la primera llega abierta, en móvil todas cerradas.
     await expect(page.locator('.solution')).toHaveCount(4);
     for (const [index, titulo] of titulos.entries()) {
       const area = page.locator('.solution').nth(index);
+      const boton = area.getByRole('button', { name: titulo, exact: true });
       await expect(area.getByRole('heading', { level: 3 })).toHaveText(titulo);
       await expect(area.locator('.solution-summary')).toBeVisible();
-      const enlace = area.getByRole('link', { name: `Consultar por WhatsApp: ${titulo}`, exact: true });
-      await expect(enlace).toBeVisible();
-      await expect(enlace).toHaveAttribute('href', whatsappUrl(mensajes[index + 1]!));
+      await expect(boton).toHaveAttribute('aria-expanded', width >= 896 && index === 0 ? 'true' : 'false');
     }
-    // Quien busca un tablero lo encuentra en una sola fila y toca cualquier punto de ella para abrir su consulta.
+    // Quien busca un tablero lo encuentra en una sola fila; tocarla despliega su información, no abre WhatsApp.
     const fila = page.locator('.solution', { hasText: /tableros/i });
     await expect(fila).toHaveCount(1);
     await expect(fila.getByRole('heading', { level: 3 })).toHaveText('Media y baja tensión');
     await expect(fila).toBeInViewport();
-    const destino = await fila.locator('.solution-summary').evaluate((resumen) => {
+    await esperarScroll(page);
+    const objetivo = await fila.locator('.solution-summary').evaluate((resumen) => {
       const rect = resumen.getBoundingClientRect();
-      return document.elementFromPoint(rect.x + 8, rect.y + rect.height / 2)?.closest('a')?.getAttribute('href');
+      const elemento = document.elementFromPoint(rect.x + 8, rect.y + rect.height / 2);
+      return { boton: elemento?.closest('button')?.id, enlace: !!elemento?.closest('a') };
     });
-    expect(destino).toBe(whatsappUrl(mensajes[1]!));
-    await page.keyboard.press('Tab');
-    await expect(fila.getByRole('link')).toBeFocused();
-    expect(await fila.getByRole('link').evaluate((enlace) => getComputedStyle(enlace, '::after').outlineStyle)).toBe('solid');
-    if (width === 390) await fila.screenshot({ path: `${capturas}/fila-tableros-390.png` });
+    expect(objetivo).toEqual({ boton: 'boton-media-baja-tension', enlace: false });
+
+    for (const [index, titulo] of titulos.entries()) {
+      const area = page.locator('.solution').nth(index);
+      const boton = area.getByRole('button', { name: titulo, exact: true });
+      const cta = area.getByRole('link', { name: `Cotizar por WhatsApp: ${titulo}`, exact: true });
+      if ((await boton.getAttribute('aria-expanded')) !== 'true') {
+        if (width < 896) await boton.tap();
+        else await boton.click();
+      }
+      await expect(boton).toHaveAttribute('aria-expanded', 'true');
+      await expect(area.locator('.solution-description')).toBeVisible();
+      await expect(area.locator('.solution-tags li').first()).toBeVisible();
+      await expect(area.locator('.solution-media')).toBeVisible();
+      await expect(cta).toBeVisible();
+      await expect(cta).toHaveAttribute('href', whatsappUrl(mensajes[index + 1]!));
+      if (index === 0 && width === 390) {
+        await page.waitForTimeout(3200);
+        await area.screenshot({ path: `${capturas}/media-baja-390.png` });
+      }
+      // Teclado: Enter cierra y Espacio vuelve a abrir.
+      await boton.focus();
+      await page.keyboard.press('Enter');
+      await expect(boton).toHaveAttribute('aria-expanded', 'false');
+      await expect(cta).toBeHidden();
+      await page.keyboard.press('Space');
+      await expect(boton).toHaveAttribute('aria-expanded', 'true');
+      await expect(cta).toBeVisible();
+      expect(await boton.evaluate((elemento) => getComputedStyle(elemento, '::after').outlineStyle)).toBe('solid');
+      await sinDesbordamiento(page);
+    }
+
+    // Encabezado fijo: translúcido al bajar y con la barra de lectura completa al final.
+    const cabecera = page.locator('[data-header]');
+    await expect(cabecera).toHaveCSS('position', 'sticky');
+    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+    await expect(cabecera).toHaveAttribute('data-scrolled', '');
+    await expect.poll(() => cabecera.evaluate((elemento) => parseFloat(getComputedStyle(elemento).getPropertyValue('--avance')))).toBeGreaterThan(0.98);
+    expect(await cabecera.evaluate((elemento) => elemento.getBoundingClientRect().top)).toBe(0);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await expect(cabecera).not.toHaveAttribute('data-scrolled', '');
 
     // Pie: enlaces visibles y separados lo suficiente para el toque.
     const enlacesPie = await page.locator('footer a').evaluateAll((enlaces) => enlaces.map((enlace) => enlace.getBoundingClientRect()).map((r) => ({ y: r.y + scrollY, abajo: r.bottom + scrollY, x: r.x, derecha: r.right })));
@@ -318,7 +371,8 @@ test('salto entre móvil y escritorio, cierre exterior y movimiento reducido', a
   const toggle = page.getByRole('button', { name: 'Menú', exact: true });
   await toggle.click();
   await expect(page.getByRole('navigation')).toBeVisible();
-  await page.locator('h1').click();
+  // El menú se despliega sobre la portada: un toque en una zona libre de la página lo cierra.
+  await page.mouse.click(10, 860);
   await expect(page.getByRole('navigation')).toBeHidden();
   await toggle.click();
   await page.getByRole('link', { name: 'Suministros', exact: true }).focus();
@@ -330,7 +384,6 @@ test('salto entre móvil y escritorio, cierre exterior y movimiento reducido', a
   await expect(page.getByRole('navigation')).toBeHidden();
   await expect(toggle).toBeFocused();
   await sinDesbordamiento(page);
-  await expect(page.getByRole('button', { name: 'Pausar animación del titular', exact: true })).toBeHidden();
   expect(await page.locator('.solution h3').first().evaluate((element) => getComputedStyle(element).transitionDuration)).toBe('0s');
   expect(await page.locator('.menu-icon span').first().evaluate((element) => getComputedStyle(element).transitionDuration)).toBe('0s');
 });
@@ -342,14 +395,16 @@ test('anclas y consultas conservan funcionalidad sin JavaScript', async ({ brows
   await expect(page.locator('h1')).toHaveAccessibleName('Materiales eléctricos para tu obra.');
   await expect(page.locator('.hero-phrase.is-active')).toHaveText('obra.');
   await expect(page.locator('.hero-phrase.is-active')).toHaveCSS('opacity', '1');
-  await expect(page.locator('[data-hero-pause]')).toBeHidden();
   await expect(page.locator('#inicio a[href^="https://wa.me/"]')).toBeVisible();
   await expect(page.getByRole('navigation')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Menú', exact: true })).toBeHidden();
   await page.getByRole('link', { name: 'Suministros', exact: true }).click();
   await expect(page).toHaveURL(/#soluciones$/);
+  // Sin JavaScript las cuatro áreas quedan desplegadas y sus consultas visibles.
   for (const [index, titulo] of titulos.entries()) {
-    await expect(page.getByRole('link', { name: `Consultar por WhatsApp: ${titulo}`, exact: true })).toHaveAttribute('href', whatsappUrl(mensajes[index + 1]!));
+    const cta = page.getByRole('link', { name: `Cotizar por WhatsApp: ${titulo}`, exact: true });
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute('href', whatsappUrl(mensajes[index + 1]!));
   }
   await sinDesbordamiento(page);
   await context.close();

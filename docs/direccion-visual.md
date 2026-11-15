@@ -13,7 +13,7 @@ La marca es **Servielectric Ferreteria**. La firma de dos líneas muestra `SERVI
 - Paleta: azul institucional `#01177D`, amarillo de cotización/selección `#FECF0F`, blanco `#FFFFFF`, texto `#1A2238`, texto secundario `#505A74`, fondo suave `#F5F6FA`; cobre `#914A27` solo para el sustantivo variable (6,54:1 sobre blanco).
 - Tipografía: Barlow 600/700 para marca, titulares y familias técnicas; Inter 400/500/600/700 para lectura y acciones. Archivos locales con licencia OFL. Georgia cursiva, peso 500, para la frase variable, sin descargar otra fuente.
 - Portada: antetítulo «Valledupar · Desde 1989», fijo «Materiales eléctricos» y prefijo serif azul «para tu». Solo cambia el sustantivo cobre «obra./negocio./hogar.». Separador fino antes de la invitación a cotizar. Contenido 48 % / fotografía 52 %. La ilustración de la bobina se retiró: un marco neutro de proporción estable (3:2; 5:2 en tablet) espera la foto en `public/images/portada.jpg`.
-- Suministros: título y una línea de ayuda arriba; debajo, cuatro filas siempre visibles separadas por líneas finas sobre el azul. Cada fila: nombre Barlow, línea breve con lo confirmado y consulta por WhatsApp (texto amarillo desde tablet, círculo amarillo de 44 px en móvil). Toda la fila es el área táctil. Sin acordeón ni foto: la única fotografía disponible era una referencia de pen.dev que, sin su pie, pasaría por inventario propio.
+- Suministros: título y una línea de ayuda arriba; debajo, cuatro filas sobre el azul (nombre, línea breve y botón circular). La fila despliega su panel: descripción, especialidades confirmadas en LinkedIn, «Cotizar por WhatsApp» e imagen 16:10. Mientras no haya fotos, cada área tiene una ilustración técnica en estilo plano (líneas blancas, acentos amarillos, retícula) que se traza y se enciende al abrirse. En escritorio la primera área llega abierta y anima al entrar en pantalla.
 - Marcas: franja clara entre Soluciones e Historia. Título a la izquierda y pista a la derecha; título encima en móvil. A 24 px/s si desborda; estática si cabe. Extremos fijos con máscara y blur progresivo, centro nítido. Botón discreto de pausa y lista completa estática con movimiento reducido. Sin confirmaciones se muestra solo una demostración neutra en desarrollo.
 - Historia: rótulo, fundador y texto agrupados; retrato de 15 rem centrado con el texto en escritorio y de 88 px junto al nombre en móvil. Sin rostro atribuido, relato añadido ni pie interno.
 - Ubicación: título, dirección, teléfono y acciones a la izquierda; mapa real de Google a la derecha, en la misma columna exterior del hero. En móvil, el mapa sigue a las acciones. Iframe diferido con tamaño reservado, coordenadas exactas y zoom 17. Los botones de indicaciones son independientes del iframe.
@@ -25,18 +25,19 @@ marca      nav centrada    Cotizar  marca         menú
 Valledupar · Desde 1989 [foto 3:2]  Valledupar · Desde 1989
 Materiales eléctricos              Materiales eléctricos
 para tu obra.                      para tu obra.
--------------------- ‖              -------------------- ‖
+----------------------             ----------------------
 texto + acciones                   texto + acciones
                                    [foto 3:2 / 5:2]
 azul: título + línea               azul: título + línea
-nombre · línea · consulta (x4)     nombre / línea   (wa) (x4)
+nombre · línea · (v) (x4)          nombre / línea   (v) (x4)
+└ panel: texto + [ilustración]     └ panel: [ilustración] / texto
 marcas [pista] · solo dev          marcas + pista · solo dev
 historia + fundador [retrato menor] [retrato] fundador / historia
-ubicación + CTA [Google Maps]       ubicación + CTA + Google Maps
+azul: ubicación + CTA [mapa]        azul: ubicación + CTA + mapa
 pie: marca · ventas · perfiles   pie: marca / ventas / perfiles
 ```
 
-Revisión del plan: se conserva un único margen de contenido. Hero y mapa comparten columnas, separación y proporción 3:2. El sustantivo concentra el gesto de portada; la foto permanece quieta. Encabezado en tres columnas (marca, navegación centrada, Cotizar) y pie con marca grande, ventas por WhatsApp y perfiles oficiales cuando haya URL. Espaciado corregido en cada componente (`--section-compact` para Suministros, Historia y Ubicación); comparación antes/después en `artifacts/ritmo-suministros/`. La pista de marcas se anima de forma independiente de las capas fijas de blur. Las demás secciones conservan su composición. Evidencia actual, incluidos WEBM, en `artifacts/hero-marcas/`; iteraciones previas conservadas en sus carpetas.
+Revisión del plan: se conserva un único margen de contenido. Hero y mapa comparten columnas, separación y proporción 3:2. El sustantivo concentra el gesto de portada; la foto permanece quieta. Encabezado fijo en tres columnas (marca, navegación centrada, Cotizar), translúcido al bajar y con barra de lectura amarilla. Ubicación sobre azul con el mapa como tarjeta blanca con sombra. Pie azul noche con lema, WhatsApp con el número dentro, Instagram, LinkedIn y «Volver arriba» como botón secundario. Sin botones de pausa: el titular y la franja se detienen con el puntero encima. Espaciado corregido en cada componente (`--section-compact` para Suministros, Historia y Ubicación); comparación antes/después en `artifacts/ritmo-suministros/`. La pista de marcas se anima de forma independiente de las capas fijas de blur. Las demás secciones conservan su composición. Evidencia actual, incluidos WEBM, en `artifacts/hero-marcas/`; iteraciones previas conservadas en sus carpetas.
 
 ## Referencias que se conservan para fotografía y familias
 

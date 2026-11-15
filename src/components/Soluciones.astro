@@ -1,26 +1,87 @@
 ---
 import { soluciones } from '../data/soluciones';
+import { empresa } from '../data/empresa';
 import { whatsappUrl } from '../lib/contacto';
+import { existeEnPublic } from '../lib/imagenes';
 import Icono from './Icono.astro';
+import IlustracionArea from './IlustracionArea.astro';
 ---
 <section id="soluciones" class="section solutions" aria-labelledby="titulo-soluciones" tabindex="-1">
   <div class="container">
     <div class="solutions-heading">
       <h2 id="titulo-soluciones">Suministros y servicios eléctricos</h2>
-      <p>Elige un área y abre WhatsApp con tu consulta ya escrita.</p>
+      <p>Soluciones integrales en sistemas eléctricos y telecomunicaciones. Abre cada área para ver qué incluye.</p>
     </div>
-    <!-- Las cuatro áreas siempre visibles; toda la fila abre la consulta de su área. -->
-    <ul class="solutions-list">
-      {soluciones.map((solucion) => (
-        <li class="solution" id={`area-${solucion.id}`}>
-          <h3>{solucion.titulo}</h3>
-          <p class="solution-summary">{solucion.resumen}</p>
-          <a class="solution-link" href={whatsappUrl(solucion.mensaje)} aria-label={`Consultar por WhatsApp: ${solucion.titulo}`}>
-            <span class="solution-link-icon"><Icono nombre="whatsapp" /></span>
-            <span class="solution-link-text">Consultar por WhatsApp</span>
-          </a>
-        </li>
-      ))}
-    </ul>
+    <!-- Sin JavaScript todas las áreas quedan abiertas; con JavaScript se despliegan una a una. -->
+    <div class="solutions-list" data-acordeon>
+      {soluciones.map((solucion, index) => {
+        const conFoto = existeEnPublic(solucion.foto.src);
+        return (
+          <article class="solution" id={`area-${solucion.id}`} data-abierta-inicial={index === 0 ? '' : undefined}>
+            <div class="solution-header">
+              <h3>
+                <button class="solution-toggle" type="button" id={`boton-${solucion.id}`} aria-expanded="true" aria-controls={`panel-${solucion.id}`} aria-describedby={`resumen-${solucion.id}`}>
+                  {solucion.titulo}
+                </button>
+              </h3>
+              <p class="solution-summary" id={`resumen-${solucion.id}`}>{solucion.resumen}</p>
+              <span class="solution-icon" aria-hidden="true"><Icono nombre="desplegar" /></span>
+            </div>
+            <div class="solution-panel" id={`panel-${solucion.id}`} role="region" aria-labelledby={`boton-${solucion.id}`}>
+              <div class="solution-panel-inner">
+                <div class="solution-body">
+                  <div class="solution-info">
+                    <p class="solution-description" style="--i:0">{solucion.descripcion}</p>
+                    <ul class="solution-tags" aria-label={`Especialidades de ${solucion.titulo}`}>
+                      {solucion.especialidades.map((especialidad, i) => <li style={`--i:${i + 1}`}>{especialidad}</li>)}
+                    </ul>
+                    <a class="button solution-cta" style={`--i:${solucion.especialidades.length + 1}`} href={whatsappUrl(solucion.mensaje)} aria-label={`Cotizar por WhatsApp: ${solucion.titulo}`}>
+                      <Icono nombre="whatsapp" />Cotizar por WhatsApp
+                    </a>
+                  </div>
+                  <div class:list={['solution-media', { 'has-photo': conFoto }]}>
+                    {conFoto
+                      ? <img src={solucion.foto.src} alt={solucion.foto.alt} width="960" height="600" loading="lazy" decoding="async" />
+                      : <IlustracionArea area={solucion.id} />}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+    <p class="solutions-services"><Icono nombre="rayo" />{empresa.servicios}</p>
   </div>
 </section>
+
+<script>
+  // Acordeón accesible: cada área abre y cierra por separado; la animación se repite al abrir.
+  const lista = document.querySelector<HTMLElement>('[data-acordeon]');
+  if (lista) {
+    const areas = Array.from(lista.querySelectorAll<HTMLElement>('.solution'));
+    const escritorio = window.matchMedia('(min-width: 56rem)');
+    const fijar = (area: HTMLElement, abierta: boolean, animar: boolean) => {
+      area.classList.toggle('is-open', abierta);
+      area.classList.toggle('is-animated', abierta && animar);
+      area.querySelector('.solution-toggle')?.setAttribute('aria-expanded', String(abierta));
+    };
+
+    areas.forEach((area) => {
+      // En escritorio la primera área llega abierta; en móvil se ven las cuatro filas compactas.
+      fijar(area, escritorio.matches && area.hasAttribute('data-abierta-inicial'), false);
+      area.querySelector('.solution-toggle')?.addEventListener('click', () => {
+        fijar(area, !area.classList.contains('is-open'), true);
+      });
+    });
+    lista.dataset.acordeonListo = '';
+
+    // La primera área abierta anima su ilustración cuando la sección entra en pantalla, no al cargar.
+    const observador = new IntersectionObserver((entradas) => {
+      if (!entradas.some((entrada) => entrada.isIntersecting)) return;
+      areas.filter((area) => area.classList.contains('is-open')).forEach((area) => area.classList.add('is-animated'));
+      observador.disconnect();
+    }, { threshold: 0.25 });
+    observador.observe(lista);
+  }
+</script>

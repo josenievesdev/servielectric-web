@@ -1,7 +1,6 @@
 ---
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import type { Imagen } from '../data/imagenes';
+import { existeEnPublic } from '../lib/imagenes';
 
 interface Props {
   imagen: Imagen;
@@ -11,7 +10,7 @@ interface Props {
 
 const { imagen, class: clase, prioridad = false } = Astro.props;
 // Una imagen pendiente no genera una petición rota: el marco conserva la proporción con un fondo neutro.
-const disponible = imagen.src !== '' && existsSync(join(process.cwd(), 'public', imagen.src));
+const disponible = existeEnPublic(imagen.src);
 ---
 <figure class:list={['media', clase, { 'is-pending': !disponible }]} aria-hidden={disponible ? undefined : 'true'}>
   <div class="media-frame">
